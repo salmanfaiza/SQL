@@ -1,3 +1,5 @@
+#This analysis utilized the following Fortune 500 dataset:
+
 CREATE TABLE fortune_companies (
     company_id INTEGER PRIMARY KEY,
     company_name TEXT,
@@ -55,3 +57,49 @@ VALUES
     ('Company II', 'Telecommunications', 110.5, 2000, 1, 21, 12, 4.9),
     ('Company JJ', 'Manufacturing', 370.0, 3100, 1, 20, 12, 7.6),
     ('Company KK', 'Healthcare', 150.2, 3400, 0, 16, 8, 5.3);
+
+# Analysis: 
+
+# Assign all the companies in the Healthcare industry as "great_workplace", "acceptable", or "not_acceptable" based on the maternity leave they offer.
+
+SELECT company_name,
+CASE 
+WHEN maternity_leave_weeks>= 10 THEN "great_workplace"
+WHEN maternity_leave_weeks>= 8 THEN "acceptable"
+ELSE "not_acceptable"
+END AS workplace_criteria
+FROM fortune_companies
+WHERE industry='Healthcare';
+
+ # Find industries where the average employee tenure is above 6 years and the total number of employees is greater than 50,000.
+ 
+ SELECT industry
+ FROM fortune_companies
+ GROUP BY industry
+ HAVING AVG(avg_employee_tenure)>6
+ AND SUM (employees)> 50000;
+ 
+ 
+#  Calculate the number of companies in each industry that have both healthcare benefits and more than 20 paid time off days.
+ 
+ SELECT industry, 
+ COUNT(*) AS num_companies
+ FROM fortune_companies
+ WHERE healthcare_benefits=1 AND paid_time_off_days>20
+ GROUP BY industry
+
+
+# Calculate the total number of employees in the 'Technology' industry and the 'Finance' industry, where the revenue is above 300.
+
+SELECT industry,
+SUM (employees) AS total_number_employees
+FROM fortune_companies
+WHERE (industry= 'Technology' OR industry= 'Finance') AND revenue > 300
+GROUP BY industry;
+
+
+ # Identify companies in the 'Technology' industry with more than 2,000 employees that offer healthcare benefits.
+
+SELECT company_name
+FROM fortune_companies
+WHERE industry= 'Technology' AND employees> 2000 AND healthcare_benefits= 1;
